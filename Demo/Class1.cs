@@ -9,7 +9,7 @@ using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Support.UI;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-//should we use the try/catch in this block?
+//should we use the try/catch in this block? - No
 namespace Demo
 {
     [TestClass]
