@@ -45,13 +45,23 @@ namespace Advanced_User_Interactions
             //selecting multiple items on a select item
             //IWebDriver driver = new FirefoxDriver();
             driver.Navigate().GoToUrl("http://book.theautomatedtester.co.uk/multi-select.html");
-            builder = new Actions(driver);
-            IWebElement select = driver.FindElement(By.TagName("select"));
-            ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
-            System.Console.WriteLine("list: "+options);
-            //IAction multipleSelect = builder.KeyDown(Keys.Shift)
-            ////.Click(options[0])
+            //builder = new Actions(driver);
+            ReadOnlyCollection<IWebElement> allSelect = driver.FindElements(By.TagName("select"));
+            foreach (IWebElement i in allSelect) {
+                builder = new Actions(driver);
+                ReadOnlyCollection<IWebElement> option = i.FindElements(By.TagName("option"));
+                System.Console.WriteLine("list: " + option.Count);
+                IAction multipleSelect = builder.KeyDown(Keys.Shift)
+                .Click(option[0])
+                .Click(option[1])
+                .Build();
+                multipleSelect.Perform();
+            }
+            //IWebElement select = driver.FindElement(By.Id("selectWithMultipleEqualsMultiple"));
+            //ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
+            //IAction multipleSelect = builder.KeyDown(Keys.Control)
             //.Click(options[1])
+            //.Click(options[3])
             //.Build();
             //multipleSelect.Perform();
 
