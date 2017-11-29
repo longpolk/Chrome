@@ -65,6 +65,17 @@ namespace Advanced_User_Interactions
             //.Build();
             //multipleSelect.Perform();
 
+            //holding the mouse button down while moving the mouse
+            builder = new Actions(driver);
+            driver.Navigate().GoToUrl("http://www.theautomatedtester.co.uk/demo1.html");
+            IWebElement canvas = driver.FindElement(By.Id("tutorial"));
+            dragAndDrop = builder.ClickAndHold(canvas)
+            .MoveByOffset(-40, -60)
+            .MoveByOffset(20, 20)
+            .MoveByOffset(100, 150)
+            .Release(canvas)
+            .Build();
+            dragAndDrop.Perform();
         }
         [AssemblyCleanup]
         public static void TeardownTest()
