@@ -12,6 +12,7 @@ using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
 using System.Collections.ObjectModel;
 using System.Drawing.Imaging;
+using OpenQA.Selenium.Support.UI;
 
 namespace Advanced_User_Interactions
 {
@@ -114,6 +115,26 @@ namespace Advanced_User_Interactions
             //Take screenshot here:__________
             ss = ((ITakesScreenshot)driver).GetScreenshot();
             ss.SaveAsFile("e:\\TestMethod4.png", ScreenshotImageFormat.Png);
+        }
+        [TestMethod]
+        public void TestMethod5()
+        {
+            driver.Navigate().GoToUrl("http://map.google.com");
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait.Until((d) => { return d.FindElement(By.Id("searchboxinput")); });
+
+            driver.FindElement(By.Id("searchboxinput")).Clear();
+            driver.FindElement(By.Id("searchboxinput")).SendKeys("135/37 PHAM DANG GIANG");
+            driver.FindElement(By.Id("searchbox-searchbutton")).Click();
+
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait.Until((d) => { return d.FindElement(By.XPath("//button[@class='section-hero-header-directions noprint']")); });
+            driver.FindElement(By.XPath("//button[@class='section-hero-header-directions noprint']")).Click();
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait.Until((d) => { return d.FindElement(By.XPath("//input[@class='tactile-searchbox-input']")); });
+            driver.FindElement(By.XPath("//input[@class='tactile-searchbox-input']")).Clear();
+            driver.FindElement(By.XPath("//input[@class='tactile-searchbox-input']")).SendKeys("366 nguyen trai");
+            builder.KeyDown(Keys.ArrowDown).Build().Perform();
         }
         [AssemblyCleanup]
         public static void TeardownTest()
