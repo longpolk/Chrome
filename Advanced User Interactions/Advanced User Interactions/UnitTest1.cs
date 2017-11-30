@@ -11,20 +11,35 @@ using OpenQA.Selenium.IE;
 using OpenQA.Selenium.Firefox;
 using OpenQA.Selenium.Interactions;
 using System.Collections.ObjectModel;
+using System.Drawing.Imaging;
 
 namespace Advanced_User_Interactions
 {
     [TestClass]
     public class UnitTest1
     {
+        public static Screenshot ss;
+        public static IWebDriver driver;
+        public static Actions builder;
+        public static IAction dragAndDrop;
+
+        [AssemblyInitialize]
+        public static void SetupTest(TestContext context)
+        {
+            //String strPath = Directory.GetCurrentDirector();
+            //driver = new FirefoxDriver();
+            driver = new ChromeDriver();
+            //driver = new InternetExplorerDriver();
+            //verificationErrors = new StringBuilder();
+        }
         [TestMethod]
         public void TestMethod1()
         {
-            IWebDriver driver = new ChromeDriver();
+            //driver = new ChromeDriver();
             driver.Navigate().GoToUrl("http://www.theautomatedtester.co.uk/demo2.html");
             //IWebElement someElement = driver.FindElement(By.ClassName("draggable"));
             //IWebElement otherElement = driver.FindElement(By.ClassName("droppable"));
-            Actions builder = new Actions(driver);
+            builder = new Actions(driver);
             //drag n drop on other element
             //IAction dragAndDrop = builder.ClickAndHold(someElement)
             //.MoveToElement(otherElement)
@@ -33,8 +48,15 @@ namespace Advanced_User_Interactions
             //dragAndDrop.Perform();
             //drag n drop to other position
             IWebElement drag = driver.FindElement(By.ClassName("draggable"));
-            IAction dragAndDrop = builder.DragAndDropToOffset(drag, 100, 200).Build();
+            dragAndDrop = builder.DragAndDropToOffset(drag, 100, 200).Build();
             dragAndDrop.Perform();
+            //Take screenshot here:__________
+            ss = ((ITakesScreenshot)driver).GetScreenshot();
+            ss.SaveAsFile("e:\\TestMethod1.png", ScreenshotImageFormat.Png);
+        }
+        [TestMethod]
+        public void TestMethod2()
+        {
             //Open context menu
             driver.Navigate().GoToUrl("http://www.theautomatedtester.co.uk/demo1.html");
             builder = new Actions(driver);
@@ -42,6 +64,13 @@ namespace Advanced_User_Interactions
             IAction contextClick = builder.ContextClick(element)
             .Build();
             contextClick.Perform();
+            //Take screenshot here:__________
+            ss = ((ITakesScreenshot)driver).GetScreenshot();
+            ss.SaveAsFile("e:\\TestMethod2.png", ScreenshotImageFormat.Png);
+        }
+        [TestMethod]
+        public void TestMethod3()
+        {
             //selecting multiple items on a select item
             //IWebDriver driver = new FirefoxDriver();
             driver.Navigate().GoToUrl("http://book.theautomatedtester.co.uk/multi-select.html");
@@ -57,14 +86,20 @@ namespace Advanced_User_Interactions
                 .Build();
                 multipleSelect.Perform();
             }
-            //IWebElement select = driver.FindElement(By.Id("selectWithMultipleEqualsMultiple"));
-            //ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
-            //IAction multipleSelect = builder.KeyDown(Keys.Control)
-            //.Click(options[1])
-            //.Click(options[3])
-            //.Build();
-            //multipleSelect.Perform();
-
+            //Take screenshot here:__________
+            ss = ((ITakesScreenshot)driver).GetScreenshot();
+            ss.SaveAsFile("e:\\TestMethod3.png", ScreenshotImageFormat.Png);
+        }
+        //IWebElement select = driver.FindElement(By.Id("selectWithMultipleEqualsMultiple"));
+        //ReadOnlyCollection<IWebElement> options = select.FindElements(By.TagName("option"));
+        //IAction multipleSelect = builder.KeyDown(Keys.Control)
+        //.Click(options[1])
+        //.Click(options[3])
+        //.Build();
+        //multipleSelect.Perform();
+        [TestMethod]
+        public void TestMethod4()
+        {
             //holding the mouse button down while moving the mouse
             builder = new Actions(driver);
             driver.Navigate().GoToUrl("http://www.theautomatedtester.co.uk/demo1.html");
@@ -76,6 +111,9 @@ namespace Advanced_User_Interactions
             .Release(canvas)
             .Build();
             dragAndDrop.Perform();
+            //Take screenshot here:__________
+            ss = ((ITakesScreenshot)driver).GetScreenshot();
+            ss.SaveAsFile("e:\\TestMethod4.png", ScreenshotImageFormat.Png);
         }
         [AssemblyCleanup]
         public static void TeardownTest()
