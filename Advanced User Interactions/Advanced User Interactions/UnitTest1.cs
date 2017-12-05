@@ -120,21 +120,24 @@ namespace Advanced_User_Interactions
         public void TestMethod5()
         {
             driver.Navigate().GoToUrl("http://map.google.com");
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             wait.Until((d) => { return d.FindElement(By.Id("searchboxinput")); });
 
             driver.FindElement(By.Id("searchboxinput")).Clear();
             driver.FindElement(By.Id("searchboxinput")).SendKeys("135/37 PHAM DANG GIANG");
             driver.FindElement(By.Id("searchbox-searchbutton")).Click();
 
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             wait.Until((d) => { return d.FindElement(By.XPath("//button[@class='section-hero-header-directions noprint']")); });
             driver.FindElement(By.XPath("//button[@class='section-hero-header-directions noprint']")).Click();
-            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(120));
             wait.Until((d) => { return d.FindElement(By.XPath("//input[@class='tactile-searchbox-input']")); });
-            driver.FindElement(By.XPath("//input[@class='tactile-searchbox-input']")).Clear();
-            driver.FindElement(By.XPath("//input[@class='tactile-searchbox-input']")).SendKeys("366 nguyen trai");
-            builder.KeyDown(Keys.ArrowDown).Build().Perform();
+            driver.FindElement(By.ClassName("tactile-searchbox-input")).Clear();
+            driver.FindElement(By.ClassName("tactile-searchbox-input")).SendKeys("so 366 nguyen trai");
+            //wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            //wait.Until((d) => { return d.FindElement(By.XPath("//input[@class='tactile-searchbox-input'][@value='so 366 nguyen trai']")); });
+            //IAction pressKey = builder.KeyDown(Keys.ArrowDown).Build();
+            //pressKey.Perform();
         }
         [AssemblyCleanup]
         public static void TeardownTest()
