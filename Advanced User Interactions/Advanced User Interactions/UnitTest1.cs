@@ -169,7 +169,7 @@ namespace Advanced_User_Interactions
                 {
                     System.Console.WriteLine("Missing element: "+ listToverify[i]);
                     ss = ((ITakesScreenshot)driver).GetScreenshot();
-                    ss.SaveAsFile("E:\\Selenium Screen Prints/Missing-" + listToverify[i]+ ".png", ScreenshotImageFormat.Png);
+                    ss.SaveAsFile("E:\\Selenium Screen Prints/Step2-Missing-element-" + listToverify[i]+ ".png", ScreenshotImageFormat.Png);
                 }
             }
                 ss = ((ITakesScreenshot)driver).GetScreenshot();
@@ -181,26 +181,47 @@ namespace Advanced_User_Interactions
             .SendKeys(Keys.Enter)
             .Build();
             actionChain.Perform();
-            string[] tabsToverify = { "Home Page", "Document Panel", "Information (References)", "Information (Properties)", "Information (Relationships)", "Virtual Documents", "test-missing-tab" };
-            ReadOnlyCollection<IWebElement> tabs = driver.FindElements(By.CssSelector("span[class='x-tab-inner x-tab-inner-default']"));
-            for (int j=0;j<tabsToverify.Length;j++) {
-                foreach (IWebElement tab in tabs)//-> must be edited, error here!
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            wait.Until((d) => { return d.FindElement(By.Id("fduiusersettings-1110")); });
+            string[] tabsToverify = { "tab-1270-btnInnerEl", "tab-1271-btnInnerEl", "tab-1272-btnInnerEl", "tab-1273-btnInnerEl", "tab-1274-btnInnerEl", "test-missing-tab", "tab-1275-btnInnerEl" };
+            //ReadOnlyCollection<IWebElement> tabs = driver.FindElements(By.CssSelector("span[class='x-tab-inner x-tab-inner-default']"));
+            for (int j = 0; j < tabsToverify.Length; j++)
+            {
+                if (checkExistByID(tabsToverify[j]) == false)
                 {
-                    System.Console.WriteLine(tab.GetAttribute("innerHTML"));
-                    if (!tab.GetAttribute("innerHTML").Equals(tabsToverify[j]))
-                    {
-                        System.Console.WriteLine("Missing tab: " + tabsToverify[j]);
-                        ss = ((ITakesScreenshot)driver).GetScreenshot();
-                        ss.SaveAsFile("E:\\Selenium Screen Prints/Missing-tab-" + tabsToverify[j] + ".png", ScreenshotImageFormat.Png);
-                    }
+                    System.Console.WriteLine("Missing tab: " + tabsToverify[j]);
+                    ss = ((ITakesScreenshot)driver).GetScreenshot();
+                    ss.SaveAsFile("E:\\Selenium Screen Prints/Step3-Missing-tab-" + tabsToverify[j] + ".png", ScreenshotImageFormat.Png);
                 }
             }
-            IWebElement settingDialog = driver.FindElement(By.Id("fduiusersettings-1110"));
+            //IWebElement settingDialog = driver.FindElement(By.Id("fduiusersettings-1110"));
+            //builder = new Actions(driver);
+            //IWebElement rightBorder = driver.FindElement(By.Id("fduiusersettings-1110-east-handle"));
+            //actionChain = builder.ClickAndHold(rightBorder)
+            //.MoveByOffset(200, 150)
+            //.Release(rightBorder)
+            //.Build();
+            //actionChain.Perform();
             //wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
             //wait.Until((d) => { return settingDialog; });
             //js = (IJavaScriptExecutor) driver;
             //js.ExecuteScript("arguments[0].setAttribute('style', 'width:1024px')", settingDialog);
-
+            //Step 4:
+            driver.FindElement(By.Id("tab-1182-btnInnerEl")).Click();
+            string[] optionsToverify = { "Properties", "Versions", "Relationships", "Locations", "Renditions", "Parent Virtual Documents", "Your Permissions", "test-missing-option" };
+            ReadOnlyCollection<IWebElement> options = driver.FindElements(By.CssSelector("div[class='x-grid-cell-inner']"));
+            int k = 0;
+            foreach (IWebElement option in options)
+            {
+                System.Console.WriteLine(option.GetAttribute("innerHTML"));
+                if (!optionsToverify[k].Equals(option.GetAttribute("innerHTML")))
+                {
+                    System.Console.WriteLine("Missing option: " + optionsToverify[k]);
+                    ss = ((ITakesScreenshot)driver).GetScreenshot();
+                    ss.SaveAsFile("E:\\Selenium Screen Prints/Step4-Missing-option-" + optionsToverify[k] + ".png", ScreenshotImageFormat.Png);
+                }
+                k++;
+            }
         }
         [AssemblyCleanup]
         public static void TeardownTest()
