@@ -19,19 +19,25 @@ namespace Advanced_User_Interactions
     [TestClass]
     public class UnitTest1
     {
-        public static Screenshot ss;
-        public static IWebDriver driver;
-        public static Actions builder;
-        public static IAction dragAndDrop;
+        private static Screenshot ss;
+        private static IWebDriver driver;
+        private static Actions builder;
+        private static IAction actionChain;
+        private static StringBuilder verificationErrors;
+        private WebDriverWait wait;
+        private static IJavaScriptExecutor js;
 
         [AssemblyInitialize]
         public static void SetupTest(TestContext context)
         {
             //String strPath = Directory.GetCurrentDirector();
             //driver = new FirefoxDriver();
-            driver = new ChromeDriver();
+            ChromeOptions options = new ChromeOptions();
+            options.AddArguments("--start-maximized");
+            driver = new ChromeDriver(options);
+            //driver = new ChromeDriver();
             //driver = new InternetExplorerDriver();
-            //verificationErrors = new StringBuilder();
+            verificationErrors = new StringBuilder();
         }
         [TestMethod]
         public void TestMethod1()
@@ -49,8 +55,8 @@ namespace Advanced_User_Interactions
             //dragAndDrop.Perform();
             //drag n drop to other position
             IWebElement drag = driver.FindElement(By.ClassName("draggable"));
-            dragAndDrop = builder.DragAndDropToOffset(drag, 100, 200).Build();
-            dragAndDrop.Perform();
+            actionChain = builder.DragAndDropToOffset(drag, 100, 200).Build();
+            actionChain.Perform();
             //Take screenshot here:__________
             ss = ((ITakesScreenshot)driver).GetScreenshot();
             ss.SaveAsFile("e:\\TestMethod1.png", ScreenshotImageFormat.Png);
@@ -105,13 +111,13 @@ namespace Advanced_User_Interactions
             builder = new Actions(driver);
             driver.Navigate().GoToUrl("http://www.theautomatedtester.co.uk/demo1.html");
             IWebElement canvas = driver.FindElement(By.Id("tutorial"));
-            dragAndDrop = builder.ClickAndHold(canvas)
+            actionChain = builder.ClickAndHold(canvas)
             .MoveByOffset(-40, -60)
             .MoveByOffset(20, 20)
             .MoveByOffset(100, 150)
             .Release(canvas)
             .Build();
-            dragAndDrop.Perform();
+            actionChain.Perform();
             //Take screenshot here:__________
             ss = ((ITakesScreenshot)driver).GetScreenshot();
             ss.SaveAsFile("e:\\TestMethod4.png", ScreenshotImageFormat.Png);
@@ -120,7 +126,7 @@ namespace Advanced_User_Interactions
         public void TestMethod5()
         {
             driver.Navigate().GoToUrl("http://map.google.com");
-            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(60));
             wait.Until((d) => { return d.FindElement(By.Id("searchboxinput")); });
 
             driver.FindElement(By.Id("searchboxinput")).Clear();
@@ -139,6 +145,63 @@ namespace Advanced_User_Interactions
             //IAction pressKey = builder.KeyDown(Keys.ArrowDown).Build();
             //pressKey.Perform();
         }
+        [TestMethod]
+        public void FDUX001UIRoleConsumer()
+        {
+            //Step 1:
+            driver.Navigate().GoToUrl("http://vpservices7002:8080/fdui81/login/index.jsp");
+            driver.FindElement(By.Name("username")).Clear();
+            driver.FindElement(By.Name("username")).SendKeys("dmadmin");
+            driver.FindElement(By.Name("password")).Clear();
+            driver.FindElement(By.Name("password")).SendKeys("FirstDoc123");
+            driver.FindElement(By.Id("button-1015-btnInnerEl")).Click();
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            //wait.Until(driver1 => ((IJavaScriptExecutor)driver).ExecuteScript("return document.readyState").Equals("complete"));
+            wait.Until((d) => { return d.FindElement(By.Id("textfield-1014-inputEl")); });
+            //IWebElement search = driver.FindElement(By.Id("textfield-1014-inputEl"));
+            //IWebElement Adsearch = driver.FindElement(By.Id("textfield-1014-inputEl"));
+            //IWebElement home = driver.FindElement(By.Id("button-1017-btnIconEl"));
+            //Step 2:
+            string[] listToverify = { "textfield-1014-inputEl", "button-1015-btnInnerEl", "button-1017-btnIconEl", "test-missing-icon", "button-1018-btnIconEl", "button-1019-btnIconEl", "button-1021-btnIconEl", "button-1022-btnIconEl", "button-1023-btnIconEl" };
+            for (int i = 0;i<listToverify.Length; i++) {
+                //IWebElement element = driver.FindElement(By.Id(listToverify[i]));
+                if (checkExistByID(listToverify[i])==false)
+                {
+                    System.Console.WriteLine("Missing element: "+ listToverify[i]);
+                    ss = ((ITakesScreenshot)driver).GetScreenshot();
+                    ss.SaveAsFile("E:\\Selenium Screen Prints/Missing-" + listToverify[i]+ ".png", ScreenshotImageFormat.Png);
+                }
+            }
+                ss = ((ITakesScreenshot)driver).GetScreenshot();
+                ss.SaveAsFile("E:\\Selenium Screen Prints/Step2.png", ScreenshotImageFormat.Png);
+            //Step 3:
+            driver.FindElement(By.Id("button-1035-btnIconEl")).Click();
+            builder = new Actions(driver);
+            actionChain = builder.SendKeys(Keys.Down).SendKeys(Keys.Down)
+            .SendKeys(Keys.Enter)
+            .Build();
+            actionChain.Perform();
+            string[] tabsToverify = { "Home Page", "Document Panel", "Information (References)", "Information (Properties)", "Information (Relationships)", "Virtual Documents", "test-missing-tab" };
+            ReadOnlyCollection<IWebElement> tabs = driver.FindElements(By.CssSelector("span[class='x-tab-inner x-tab-inner-default']"));
+            for (int j=0;j<tabsToverify.Length;j++) {
+                foreach (IWebElement tab in tabs)//-> must be edited, error here!
+                {
+                    System.Console.WriteLine(tab.GetAttribute("innerHTML"));
+                    if (!tab.GetAttribute("innerHTML").Equals(tabsToverify[j]))
+                    {
+                        System.Console.WriteLine("Missing tab: " + tabsToverify[j]);
+                        ss = ((ITakesScreenshot)driver).GetScreenshot();
+                        ss.SaveAsFile("E:\\Selenium Screen Prints/Missing-tab-" + tabsToverify[j] + ".png", ScreenshotImageFormat.Png);
+                    }
+                }
+            }
+            IWebElement settingDialog = driver.FindElement(By.Id("fduiusersettings-1110"));
+            //wait = new WebDriverWait(driver, TimeSpan.FromSeconds(30));
+            //wait.Until((d) => { return settingDialog; });
+            //js = (IJavaScriptExecutor) driver;
+            //js.ExecuteScript("arguments[0].setAttribute('style', 'width:1024px')", settingDialog);
+
+        }
         [AssemblyCleanup]
         public static void TeardownTest()
         {
@@ -151,6 +214,31 @@ namespace Advanced_User_Interactions
                 // Ignore errors if unable to close the browser
             }
             // Assert.AreEqual("", verificationErrors.ToString());
+        }
+        public static bool checkExistByID(string s) {
+            try {
+                IWebElement element = driver.FindElement(By.Id(s));
+                if (element.Displayed)
+                    return true;
+            }
+            catch (NoSuchElementException e) {
+                //return false;
+            }
+            return false;
+        }
+        public static bool checkExistByText(string s)
+        {
+            try
+            {
+                IWebElement element = driver.FindElement(By.LinkText(s));
+                if (element.Displayed)
+                    return true;
+            }
+            catch (NoSuchElementException e)
+            {
+                //return false;
+            }
+            return false;
         }
     }
 }
